@@ -1,12 +1,17 @@
-var express = require("express");
 var mongojs = require("mongojs");
 var bodyParser = require("body-parser");
 var bcrypt = require("bcryptjs");
 var jwt = require("jsonwebtoken");
+var express = require("express");
+var http = require('http');
+var socketIO = require("socket.io");
 
-var PORT = 3001;
+var port = 3001;
+var server = http.createServer(app)
 var app = express();
 app.use(bodyParser());
+
+var userId, userName;
 
 // Log any mongojs errors to console
 
@@ -74,7 +79,9 @@ app.get("/", function(req, res) {
 
 	{"message":"successfuly authenticated","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YmM1OTZjOGUxOTZmYmIwZTdkNWI0MGYiLCJ1c2VybmFtZSI6ImZyZWQiLCJpYXQiOjE1Mzk2NzU4OTIsImV4cCI6MTUzOTY5MDI5Mn0.xalv4I9rSmKf9LV6QaeJboV4NvY0F7wIltDMc-o_amQ"}
 */
+
 app.post("/login", function(req, res) {
+  // console.log(username + " " + password)
   db.users.findOne(
     {
       username: req.body.username
@@ -84,7 +91,7 @@ app.post("/login", function(req, res) {
 
       if (!bcrypt.compareSync(req.body.password, result.password))
         return res.status(401).json({ error: "incorrect password " });
-
+    
       var payload = {
         _id: result._id,
         username: result.username
@@ -94,6 +101,9 @@ app.post("/login", function(req, res) {
         expiresIn: "4h"
       });
       console.log(result);
+      // userId = result._id;
+      // userName = result.username;
+
       return res.json({
         message: "successfuly authenticated",
         token: token,
@@ -146,13 +156,5 @@ app.post("/signup", function(req, res) {
         });
       });
     }
-  );
-});
-
-app.listen(PORT, function() {
-  console.log(
-    "🌎 ==> Now listening on PORT %s! Visit http://localhost:%s in your browser!",
-    PORT,
-    PORT
   );
 });

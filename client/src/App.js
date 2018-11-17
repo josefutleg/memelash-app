@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import "./App.css";
 import { _signUp, _login } from "./services/AuthService";
+import PlayButton from "./components/PlayButton";
+
 
 class App extends Component {
   constructor() {
@@ -49,7 +51,7 @@ class App extends Component {
     let password = inputs[2].value;
     let passwordConf = inputs[4].value;
 
-    if (password == passwordConf) {
+    if (password === passwordConf) {
       return _signUp(username, password).then(res => {
         console.log(res);
         alert(res.message);
@@ -63,18 +65,25 @@ class App extends Component {
     return (
       <div className="App">
         {this.state.logged_in === true && (
-          <div className="header">
-            <button onClick={this.logout}>log out</button>
-            <button
-              onClick={
-                (this.test = event => {
-                  console.log(this.state);
-                })
-              }
-            >
-              test
-            </button>
-          </div>
+          <div className="loggedIn">
+            <div className="header">
+              <button onClick={this.logout}>log out</button>
+              <button
+                onClick={
+                  (this.test = event => {
+                    console.log(this.state);
+                  })
+                }
+              >
+                test
+              </button>
+            </div>
+            <PlayButton 
+              logged_in={this.state.logged_in}
+              username={this.state.username}
+              userId={this.state.userId}
+            />
+        </div>    
         )}
         {this.state.logged_in === false && (
           <div className="form">

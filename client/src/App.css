@@ -50,3 +50,7 @@
   margin: auto;
   margin-top: 10%;
 }
+
+.playButton {
+  position: relative;
+}
