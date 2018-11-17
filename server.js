@@ -1,35 +1,48 @@
-var express = require("express");
-var mongojs = require("mongojs");
-var bodyParser = require("body-parser");
-var bcrypt = require("bcryptjs");
-var jwt = require("jsonwebtoken");
+const express = require("express");
+const mongojs = require("mongojs");
+const bodyParser = require("body-parser");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
-var PORT = 3001;
-var app = express();
-app.use(bodyParser());
+const PORT = 3001;
+const app = express();
+const server = require("http").Server(app);
+const io = require("socket.io")(server);
 
-// Log any mongojs errors to console
+// app.use(bodyParser());
+app.use(express.static(__dirname + "/public"));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
-var databaseUrl = "memelash_db";
-var collections = ["game"];
-var db = mongojs(databaseUrl, collections);
+const test = socket => {
+  let message = "sent from the socket!";
+  socket.emit("FromAPI", message);
+};
+
+io.on("connection", socket => {
+  console.log("New client connected");
+  test(socket);
+
+  socket.on("disconnect", () => {
+    socket.disconnect();
+    console.log("disconnected");
+  });
+});
+
+io.on("activeGame", socket => {
+  console.log("a game has just started")
+})
+
+const databaseUrl = "memelash_db";
+const collections = ["games"];
+const db = mongojs(databaseUrl, collections);
 
 db.on("error", function(error) {
   console.log("Database Error:", error);
 });
 
-//this loads the .env file in
-//we need this for secret information that we don't want on our github
 require("dotenv").config();
 
-/*
-  if we don't do this here then we'll get this error in apps that use this api
-
-  Fetch API cannot load No 'Access-Control-Allow-Origin' header is present on the requested resource. Origin is therefore not allowed access. If an opaque response serves your needs, set the request's mode to 'no-cors' to fetch the resource with CORS disabled.
-
-  read up on CORs here: https://www.maxcdn.com/one/visual-glossary/cors/
-*/
-//allow the api to be accessed by other apps
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
@@ -41,8 +54,7 @@ app.use(function(req, res, next) {
 });
 
 function verifyToken(req, res, next) {
-  // check header or url parameters or post parameters for token
-  var token =
+  const token =
     req.body.token || req.query.token || req.headers["x-access-token"];
   if (token) {
     jwt.verify(token, process.env.JWT_SECRET, (err, decod) => {
@@ -68,12 +80,6 @@ app.get("/", function(req, res) {
   );
 });
 
-//curl -d "username=fred&password=unodostresgreenbaypackers" -X POST http://localhost:3001/login
-/*
-	this will return
-
-	{"message":"successfuly authenticated","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YmM1OTZjOGUxOTZmYmIwZTdkNWI0MGYiLCJ1c2VybmFtZSI6ImZyZWQiLCJpYXQiOjE1Mzk2NzU4OTIsImV4cCI6MTUzOTY5MDI5Mn0.xalv4I9rSmKf9LV6QaeJboV4NvY0F7wIltDMc-o_amQ"}
-*/
 app.post("/login", function(req, res) {
   db.users.findOne(
     {
@@ -85,20 +91,24 @@ app.post("/login", function(req, res) {
       if (!bcrypt.compareSync(req.body.password, result.password))
         return res.status(401).json({ error: "incorrect password " });
 
-      var payload = {
+      const payload = {
         _id: result._id,
         username: result.username
       };
 
-      var token = jwt.sign(payload, process.env.JWT_SECRET, {
+      const token = jwt.sign(payload, process.env.JWT_SECRET, {
         expiresIn: "4h"
       });
       console.log(result);
       return res.json({
         message: "successfuly authenticated",
         token: token,
-        username : result.username,
-        userId: result._id
+        username: result.username,
+        userId: result._id,
+        score: result.score,
+        currentGame: result.currentGame,
+        input: result.input,
+        vote: result.vote
       });
     }
   );
@@ -128,7 +138,11 @@ app.post("/signup", function(req, res) {
           db.users.insert(
             {
               username: req.body.username,
-              password: hash
+              password: hash,
+              score: 0,                 
+              currentGame: null,    
+              input: null,                
+              vote: null
             },
             function(error, user) {
               console.log("got to line 101");
@@ -149,10 +163,70 @@ app.post("/signup", function(req, res) {
   );
 });
 
-app.listen(PORT, function() {
+app.post("/games", function(req, res){
+  db.games.find(function(error,data){
+    res.json(data);
+  })
+});
+
+app.post("/games/:id", verifyToken, function(req, res){
+  db.games.findOne({
+    "_id": mongojs.ObjectID(req.params.id)
+}, function(error, result) {
+    if (error) {
+        res.send(error);
+    } else {
+        res.json(result);
+    }
+});
+});
+
+app.post('/games/update/:id', verifyToken, function(req, res) {
+
+  db.games.findAndModify({
+      query: {
+          "_id": mongojs.ObjectId(req.params.id)
+      },
+      update: {
+          $push: {
+              "players": [{
+                "userId": req.body.userId,
+                "userName": req.body.userName
+              }]
+          }
+      },
+      new: true
+  }, function(err, updatedGame) {
+      res.json(updatedGame);
+  });
+});
+
+app.post('/games/leave/:id', verifyToken, function(req, res) {
+
+  db.games.findAndModify({
+      query: {
+          "_id": mongojs.ObjectId(req.params.id)
+      },
+      update: {
+          $pull: {
+              "players": [{
+                "userId": req.body.userId,
+                "userName": req.body.userName
+              }]
+          }
+      },
+      new: true
+  }, function(err, updatedGame) {
+      res.json(updatedGame);
+  });
+});
+
+server.listen(PORT, function() {
   console.log(
     "🌎 ==> Now listening on PORT %s! Visit http://localhost:%s in your browser!",
     PORT,
     PORT
   );
 });
+
+
