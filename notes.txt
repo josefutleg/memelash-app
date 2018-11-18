@@ -17,7 +17,7 @@ db.games.insertMany([
     scores: [],
     currentMeme: null,
     answers: [],
-    active: false
+    active: true
   },
   {
     room: "purple",

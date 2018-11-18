@@ -36,7 +36,9 @@ class App extends Component {
     const socket = socketIOClient(endpoint);
     console.log(this.state.response);
     socket.on("FromAPI", data => this.setState({ response: `${data}` }));
-    // socket.on(console.log("socket connected"));
+    socket.emit("user connected", data => {
+      
+    });
   }
 
   login = event => {
@@ -142,6 +144,10 @@ class App extends Component {
     });
   };
 
+
+
+
+
   render() {
     return (
       <div className="App">
@@ -231,3 +237,6 @@ class App extends Component {
 }
 
 export default App;
+
+
+// http://version1.api.memegenerator.net//Generators_Search?q=funny&pageSize=25&apiKey=ed0e5625-ed2d-4049-a830-bafce8b69716

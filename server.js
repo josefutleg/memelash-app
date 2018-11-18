@@ -13,6 +13,25 @@ app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+// <<<<<<< ju-20181118
+// const test = socket => {
+//   let message = "sent from the socket!";
+//   socket.emit("FromAPI", message);
+// };
+
+// io.on("connection", socket => {
+//   console.log("New client connected");
+//   test(socket);
+
+//   socket.on("disconnect", () => {
+//     socket.disconnect();
+//     console.log("disconnected");
+//   });
+// });
+
+
+// =======
+// >>>>>>> master
 const databaseUrl = "memelash_db";
 const collections = ["games"];
 const db = mongojs(databaseUrl, collections);
