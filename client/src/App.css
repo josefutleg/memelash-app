@@ -34,6 +34,9 @@
   width: 60%;
 }
 
+.playButton {
+  position: relative;
+}
 /* .resultsP {
   float: left;
 }
