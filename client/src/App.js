@@ -1,18 +1,42 @@
 import React, { Component } from "react";
 import "./App.css";
 import { _signUp, _login } from "./services/AuthService";
-import PlayButton from "./components/PlayButton";
+import GameSession from './components/GameSession';
 
+import {
+  _getAvailableRooms,
+  _joinGame,
+  _findGame,
+  _leaveGame
+} from "./services/GameService";
+import socketIOClient from "socket.io-client";
+import Rooms from "./components/Rooms";
 
 class App extends Component {
   constructor() {
     super();
-
     this.state = {
       logged_in: false,
       username: "",
-      userId: ""
+      userId: "",
+      response: false,
+      endpoint: "http://localhost:3001",
+      score: "",
+      currentGame: null,
+      input: "",
+      vote: "",
+      gamesAvailable: [],
+      joinedGame: false
     };
+  }
+
+  componentDidMount() {
+    const { endpoint } = this.state;
+    console.log(this.state);
+    const socket = socketIOClient(endpoint);
+    console.log(this.state.response);
+    socket.on("FromAPI", data => this.setState({ response: `${data}` }));
+    // socket.on(console.log("socket connected"));
   }
 
   login = event => {
@@ -25,11 +49,26 @@ class App extends Component {
       if (res.token) {
         this.setState({ userId: res.userId });
         this.setState({ username: res.username });
+        this.setState({ score: res.score });
+        this.setState({ currentGame: res.currentGame });
+        this.setState({ input: res.input });
+        this.setState({ vote: res.vote });
         this.setState({ logged_in: true }, function() {
           localStorage.setItem("token", res.token);
+          alert(this.state.response);
+          _getAvailableRooms().then(resultingJSON => {
+            let arr = [];
+            for (let i = 0; i < resultingJSON.length; i++) {
+              if (resultingJSON[i].active === false) {
+                arr.push(resultingJSON[i]);
+              }
+            }
+            this.setState({ gamesAvailable: arr });
+            console.log(this.state);
+          });
         });
       } else {
-        alert("you were not logged in");
+        alert("invalid username/password");
       }
     });
   };
@@ -60,6 +99,48 @@ class App extends Component {
       alert("your password and password confirmation have to match!");
     }
   };
+  getToken = () => {
+    return localStorage.getItem("token");
+  };
+
+  joinGame = event => {
+    event.preventDefault();
+    this.setState({joinedGame: true})
+
+    let selectedGame = event.target.getAttribute("data-id");
+    console.log(selectedGame);
+
+    return _findGame(selectedGame, this.getToken()).then(resultingJSON => {
+      console.log(resultingJSON);
+      this.setState({ currentGame: resultingJSON._id });
+      let d = document.querySelector(".roomContainer");
+      d.classList.add("hidden");
+      // console.log(this.state.username);
+      // console.log(this.state.userId);
+      _joinGame(
+        resultingJSON._id,
+        this.state.userId,
+        this.state.username,
+        this.getToken()
+      ).then(rj => {
+        console.log(rj);
+      });
+    });
+  };
+
+  leaveGame = event => {
+    this.setState({ currentGame: null });
+    let d = document.querySelector(".roomContainer");
+    d.classList.remove("hidden");
+    return _leaveGame(
+      this.state.currentGame,
+      this.state.userId,
+      this.state.username,
+      this.getToken()
+    ).then(rj => {
+      console.log(rj);
+    });
+  };
 
   render() {
     return (
@@ -68,21 +149,8 @@ class App extends Component {
           <div className="loggedIn">
             <div className="header">
               <button onClick={this.logout}>log out</button>
-              <button
-                onClick={
-                  (this.test = event => {
-                    console.log(this.state);
-                  })
-                }
-              >
-                test
-              </button>
+              <h4>hello, {this.state.username}!</h4>
             </div>
-            <PlayButton 
-              logged_in={this.state.logged_in}
-              username={this.state.username}
-              userId={this.state.userId}
-            />
         </div>    
         )}
         {this.state.logged_in === false && (
@@ -118,9 +186,39 @@ class App extends Component {
             </div>
           </div>
         )}
+        {this.state.logged_in === true && (
+          <div className="roomContainer">
+            <h3>available games</h3>
+            {this.state.gamesAvailable.map(x => (
+              <Rooms
+                _id={x._id}
+                room={x.room}
+                players={x.players}
+                join={this.joinGame}
+                didJoin = {this.state.joinedGame}
+              />
+            ))}
+          </div>
+        )}
+
+        {this.state.currentGame !== null && (
+          <div>
+            {/* <PlayButton 
+              logged_in={this.state.logged_in}
+              username={this.state.username}
+              userId={this.state.userId}
+            /> */}
+            <GameSession 
+              logged_in={this.state.logged_in}
+              username={this.state.username}
+              userId={this.state.userId}
+              leaveGame={this.leaveGame}
+            />
+          </div>
+        )}
         <button
           onClick={
-            (this.test = event => {
+            (this.check = event => {
               console.log(this.state);
             })
           }

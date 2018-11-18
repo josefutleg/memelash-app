@@ -1,0 +1,82 @@
+// room schema
+
+db.games.insertMany([
+  {
+    room: "red",
+    players: [],
+    timer: null,
+    scores: [],
+    currentMeme: null,
+    answers: [],
+    active: false
+  },
+  {
+    room: "blue",
+    players: [],
+    timer: null,
+    scores: [],
+    currentMeme: null,
+    answers: [],
+    active: false
+  },
+  {
+    room: "purple",
+    players: [],
+    timer: null,
+    scores: [],
+    currentMeme: null,
+    answers: [],
+    active: false
+  },
+  {
+    room: "orange",
+    players: [],
+    timer: null,
+    scores: [],
+    currentMeme: null,
+    answers: [],
+    active: false
+  }
+]);
+
+db.users.insert({
+  username: "",
+  password: "",
+  score: 0,                 
+  currentGame: null,    
+  input: null,                
+  vote: null
+});
+
+//player schema
+
+db.users.insert({
+  username: "",
+  password: "",
+  score: 0,                 //this will change everytime their score goes up
+  currentGame: "roomId",    //this will take the room's _id so the user will update and receive updates to and from the correct room
+  input: "",                //this will update everytime the user inputs an answer
+  vote: null
+                            //all values will empty when user logs out, ends/exits game
+});
+
+db.games.insert([
+  {
+    room: "orange",
+    players: [
+      {
+        id: userId,
+        user: userName
+      }
+    ],
+    timer: null,            //interval is created once game starts. this will change constantly and communicate with the socket to keep the timer the same on all users pages
+    currentMeme: null,      //when this changes, it should be the same for all users in the room
+    answers: [
+      {
+        id: userId,         //this will link to db.users' _id. when appended to page, set each radio input's #id value to each unique _id
+        input: userInput
+      }
+    ],
+    active: false           //game is not in progress - will change to true once game starts. so it will not show on user's dashboard for games to join
+  }
+])
