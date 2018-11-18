@@ -29,9 +29,6 @@ io.on("connection", socket => {
   });
 });
 
-io.on("activeGame", socket => {
-  console.log("a game has just started")
-})
 
 const databaseUrl = "memelash_db";
 const collections = ["games"];
