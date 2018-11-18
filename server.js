@@ -3,7 +3,6 @@ const mongojs = require("mongojs");
 const bodyParser = require("body-parser");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
 const PORT = 3001;
 const app = express();
 const server = require("http").Server(app);
@@ -13,25 +12,6 @@ const io = require("socket.io")(server);
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
-const test = socket => {
-  let message = "sent from the socket!";
-  socket.emit("FromAPI", message);
-};
-
-io.on("connection", socket => {
-  console.log("New client connected");
-  test(socket);
-
-  socket.on("disconnect", () => {
-    socket.disconnect();
-    console.log("disconnected");
-  });
-});
-
-io.on("activeGame", socket => {
-  console.log("a game has just started")
-})
 
 const databaseUrl = "memelash_db";
 const collections = ["games"];
@@ -80,7 +60,16 @@ app.get("/", function(req, res) {
   );
 });
 
+//curl -d "username=fred&password=unodostresgreenbaypackers" -X POST http://localhost:3001/login
+/*
+	this will return
+
+	{"message":"successfuly authenticated","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YmM1OTZjOGUxOTZmYmIwZTdkNWI0MGYiLCJ1c2VybmFtZSI6ImZyZWQiLCJpYXQiOjE1Mzk2NzU4OTIsImV4cCI6MTUzOTY5MDI5Mn0.xalv4I9rSmKf9LV6QaeJboV4NvY0F7wIltDMc-o_amQ"}
+*/
+
+var userId, username;
 app.post("/login", function(req, res) {
+  // console.log(username + " " + password)
   db.users.findOne(
     {
       username: req.body.username
@@ -100,6 +89,9 @@ app.post("/login", function(req, res) {
         expiresIn: "4h"
       });
       console.log(result);
+      userId = result._id;
+      username = result.username;
+
       return res.json({
         message: "successfuly authenticated",
         token: token,
@@ -169,20 +161,24 @@ app.post("/games", function(req, res){
   })
 });
 
+//Joining a Game
+var gameId, gameRoom;
 app.post("/games/:id", verifyToken, function(req, res){
   db.games.findOne({
     "_id": mongojs.ObjectID(req.params.id)
-}, function(error, result) {
+  }, function(error, result) {
     if (error) {
         res.send(error);
     } else {
         res.json(result);
+        gameId = result._id;
+        gameRoom = result.room;
+        console.log('/games/id hits :' + JSON.stringify(result))
     }
 });
 });
 
 app.post('/games/update/:id', verifyToken, function(req, res) {
-
   db.games.findAndModify({
       query: {
           "_id": mongojs.ObjectId(req.params.id)
@@ -202,7 +198,6 @@ app.post('/games/update/:id', verifyToken, function(req, res) {
 });
 
 app.post('/games/leave/:id', verifyToken, function(req, res) {
-
   db.games.findAndModify({
       query: {
           "_id": mongojs.ObjectId(req.params.id)
@@ -221,6 +216,10 @@ app.post('/games/leave/:id', verifyToken, function(req, res) {
   });
 });
 
+// app.post('/games/create/:id', verifyToken, function(req, res) {
+//   db.games.createIndex()
+// })
+
 server.listen(PORT, function() {
   console.log(
     "🌎 ==> Now listening on PORT %s! Visit http://localhost:%s in your browser!",
@@ -229,4 +228,72 @@ server.listen(PORT, function() {
   );
 });
 
+//io socket ====================================
+const test = socket => {
+  let message = "sent from the socket!";
+  socket.emit("FromAPI", message);
+};
 
+io.on("activeGame", socket => {
+  console.log("a game has just started")
+})
+
+io.on('connection', socket => {
+  console.log('User connected')
+
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  })
+
+  socket.on('change color', (color) => {
+    // once we get a 'change color' event from one of our clients, we will send it to the rest of the clients
+    // we make use of the socket.emit method again with the argument given to use from the callback function above
+    console.log('Color Changed to: ', color)
+    io.sockets.emit('change color', color)
+  })
+
+  socket.on('display comment', comment => {
+    console.log('Comment submitted: ' + comment);
+    io.sockets.emit('display comment', comment);
+    // db.testcomment.insert({comment});
+    db.games.findAndModify({
+      query: {
+        "room" :gameRoom
+      }, 
+      update: {
+        //should be a push - but is a set to keep database small
+        $set: {
+          players: [{
+            id: userId,
+            user: username
+          }],
+          timer: null,            //interval is created once game starts. this will change constantly and communicate with the socket to keep the timer the same on all users pages
+          currentMeme: null,      //when this changes, it should be the same for all users in the room
+          answers: [{
+            id: userId,         //this will link to db.users' _id. when appended to page, set each radio input's #id value to each unique _id
+            input: comment
+          }],
+          active: false 
+        } 
+      }
+    })
+  })
+
+  socket.on('display image', image => {
+    console.log("Meme image chosen: " + image)
+    io.sockets.emit('display image', image)
+    db.games.findAndModify({
+      query: {
+        "room": gameRoom
+      },
+      update: {
+        $set: {
+          currentMeme: image,
+        }
+      }
+    })
+  })
+  
+  
+})
+//===============================================================

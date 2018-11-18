@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import "./App.css";
 import { _signUp, _login } from "./services/AuthService";
+import GameSession from './components/GameSession';
+
 import {
   _getAvailableRooms,
   _joinGame,
@@ -23,7 +25,8 @@ class App extends Component {
       currentGame: null,
       input: "",
       vote: "",
-      gamesAvailable: []
+      gamesAvailable: [],
+      joinedGame: false
     };
   }
 
@@ -87,7 +90,7 @@ class App extends Component {
     let password = inputs[2].value;
     let passwordConf = inputs[4].value;
 
-    if (password == passwordConf) {
+    if (password === passwordConf) {
       return _signUp(username, password).then(res => {
         console.log(res);
         alert(res.message);
@@ -102,6 +105,7 @@ class App extends Component {
 
   joinGame = event => {
     event.preventDefault();
+    this.setState({joinedGame: true})
 
     let selectedGame = event.target.getAttribute("data-id");
     console.log(selectedGame);
@@ -142,10 +146,12 @@ class App extends Component {
     return (
       <div className="App">
         {this.state.logged_in === true && (
-          <div className="header">
-            <button onClick={this.logout}>log out</button>
-            <h4>hello, {this.state.username}!</h4>
-          </div>
+          <div className="loggedIn">
+            <div className="header">
+              <button onClick={this.logout}>log out</button>
+              <h4>hello, {this.state.username}!</h4>
+            </div>
+        </div>    
         )}
         {this.state.logged_in === false && (
           <div className="form">
@@ -189,15 +195,25 @@ class App extends Component {
                 room={x.room}
                 players={x.players}
                 join={this.joinGame}
+                didJoin = {this.state.joinedGame}
               />
             ))}
           </div>
         )}
 
         {this.state.currentGame !== null && (
-          <div className="gameContainer">
-            <h3>game</h3>
-            <button onClick={this.leaveGame}>leave game</button>
+          <div>
+            {/* <PlayButton 
+              logged_in={this.state.logged_in}
+              username={this.state.username}
+              userId={this.state.userId}
+            /> */}
+            <GameSession 
+              logged_in={this.state.logged_in}
+              username={this.state.username}
+              userId={this.state.userId}
+              leaveGame={this.leaveGame}
+            />
           </div>
         )}
         <button
