@@ -163,7 +163,7 @@ app.post("/signup", function(req, res) {
                 res.send(error);
               } else {
                 res.json({
-                  message: "successfully signed up"
+                  message: "successfully signed up! log in to start playing!"
                 });
               }
             }
