@@ -13,25 +13,6 @@ app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// <<<<<<< ju-20181118
-// const test = socket => {
-//   let message = "sent from the socket!";
-//   socket.emit("FromAPI", message);
-// };
-
-// io.on("connection", socket => {
-//   console.log("New client connected");
-//   test(socket);
-
-//   socket.on("disconnect", () => {
-//     socket.disconnect();
-//     console.log("disconnected");
-//   });
-// });
-
-
-// =======
-// >>>>>>> master
 const databaseUrl = "memelash_db";
 const collections = ["games"];
 const db = mongojs(databaseUrl, collections);
@@ -193,6 +174,8 @@ app.post("/games/:id", verifyToken, function(req, res){
         gameId = result._id;
         gameRoom = result.room;
         console.log('/games/id hits :' + JSON.stringify(result))
+        console.log("Game Room is " + gameRoom);
+        findCountPlayers(gameRoom);
     }
 });
 });
@@ -200,15 +183,15 @@ app.post("/games/:id", verifyToken, function(req, res){
 app.post('/games/update/:id', verifyToken, function(req, res) {
   db.games.findAndModify({
       query: {
-          "_id": mongojs.ObjectId(req.params.id)
+        "_id": mongojs.ObjectId(req.params.id)
       },
       update: {
-          $push: {
-              "players": [{
-                "userId": req.body.userId,
-                "userName": req.body.userName
-              }]
+        $push: {
+          "players": {
+            "userId": req.body.userId,
+            "userName": req.body.userName
           }
+        }
       },
       new: true
   }, function(err, updatedGame) {
@@ -219,15 +202,15 @@ app.post('/games/update/:id', verifyToken, function(req, res) {
 app.post('/games/leave/:id', verifyToken, function(req, res) {
   db.games.findAndModify({
       query: {
-          "_id": mongojs.ObjectId(req.params.id)
+        "_id": mongojs.ObjectId(req.params.id)
       },
       update: {
-          $pull: {
-              "players": [{
-                "userId": req.body.userId,
-                "userName": req.body.userName
-              }]
+        $pull: {
+          "players": {
+            "userId": req.body.userId,
+            "userName": req.body.userName
           }
+        }
       },
       new: true
   }, function(err, updatedGame) {
@@ -253,15 +236,17 @@ const test = socket => {
   socket.emit("FromAPI", message);
 };
 
-io.on("activeGame", socket => {
-  console.log("a game has just started")
-})
+// io.on("active game", socket => {
+//   console.log("a game has just started")
+//   io.sockets.emit('active game', )
+// })
 
 io.on('connection', socket => {
   console.log('User connected')
 
   socket.on('disconnect', () => {
     console.log('user disconnected');
+    deleteUserFromGame(userId, username, gameRoom);
   })
 
   socket.on('change color', (color) => {
@@ -274,45 +259,106 @@ io.on('connection', socket => {
   socket.on('display comment', comment => {
     console.log('Comment submitted: ' + comment);
     io.sockets.emit('display comment', comment);
-    // db.testcomment.insert({comment});
-    db.games.findAndModify({
-      query: {
-        "room" :gameRoom
-      }, 
-      update: {
-        //should be a push - but is a set to keep database small
-        $set: {
-          players: [{
-            id: userId,
-            user: username
-          }],
-          timer: null,            //interval is created once game starts. this will change constantly and communicate with the socket to keep the timer the same on all users pages
-          currentMeme: null,      //when this changes, it should be the same for all users in the room
-          answers: [{
-            id: userId,         //this will link to db.users' _id. when appended to page, set each radio input's #id value to each unique _id
-            input: comment
-          }],
-          active: false 
-        } 
-      }
-    })
+    db.answers.insert({gameRoom, userId, username, comment});
+    findCountComment(gameRoom, comment);
+    // db.games.findAndModify({
+    //   query: {
+    //     "room" :gameRoom
+    //   }, 
+    //   update: {
+    //     //should be a push - but is a set to keep database small
+    //     //$push
+    //     $push: {
+    //       players: {
+    //         id: userId,
+    //         user: username
+    //       },            //"time" = interval is created once game starts. this will change constantly and communicate with the socket to keep the timer the same on all users pages
+    //       currentMeme: meme,      //when this changes, it should be the same for all users in the room
+    //       answers: {
+    //         id: userId,         //this will link to db.users' _id. when appended to page, set each radio input's #id value to each unique _id
+    //         input: comment
+    //       },
+    //       active: true 
+    //     } 
+    //   }
+    // });
   })
 
+  // socket.on("active game", socket => {
+  //   console.log("a game has just started")
+  //   io.sockets.emit('active game', )
+  // })
+
+  var meme;
   socket.on('display image', image => {
+    meme = image;
     console.log("Meme image chosen: " + image)
     io.sockets.emit('display image', image)
-    db.games.findAndModify({
-      query: {
-        "room": gameRoom
-      },
-      update: {
-        $set: {
-          currentMeme: image,
-        }
-      }
-    })
+    db.testimage.insert({image})
+    // db.games.findAndModify({
+    //   query: {
+    //     "room": gameRoom
+    //   },
+    //   update: {
+    //     $set: {
+    //       currentMeme: image,
+    //     }
+    //   }
+    // })
   })
   
   
 })
 //===============================================================
+function findCountComment(gameRoom, comment) {
+  db.answers.find({gameRoom}).count(function(err, count){
+    console.log(count);
+    var bulk = db.answers.initializeUnorderedBulkOp();
+    if(count > 2) {
+      bulk.find( {comment:`${comment}`} ).remove();
+      bulk.execute();
+    }
+  })
+  
+}
+
+function deleteUserFromGame(userId, username, gameRoom) {
+  db.games.find({
+    players : { userId : `${userId}` , userName : `${username}` }
+  }).count(function(err, count){
+    console.log("User count : " + count);
+    var bulk = db.games.initializeUnorderedBulkOp();
+    if(count > 1) {
+      for(var i=count; i == 1; i--) {
+        bulk.update( { room : gameRoom }, { $pop: { players: 1 } } );
+        bulk.execute();
+        // db.games.update( { room : gameRoom }, { $pop: { players: 1 } } );
+      }
+    }
+  });
+}
+
+function findCountPlayers(gameRoom) {
+  // db.games.find({room: gameRoom}).count(function(err, count){
+  //   console.log(count);
+  // })
+  // db.games.find({players: { $all: ["userId", "username"] } }).count(function(err, count){
+  //   console.log("players{all} : " + count);
+  // })
+  // db.games.find( { $and: [ { room: gameRoom }, { players: { $size : 5 } } ] } )
+
+  db.games.find({
+    players : { userId : userId , userName : username }
+  }).count(function(err, count){
+    console.log("User count : " + count);
+  });
+  // db.games.find({players: {$size: 1} }).count(function(err, count){
+  //   console.log(count);
+  //   var bulk = db.answers.initializeUnorderedBulkOp();
+  //   if(count > 2) {
+  //     bulk.find( {comment:`${comment}`} ).remove();
+  //     bulk.execute();
+  //   }
+  // })
+  
+}

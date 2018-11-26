@@ -1,0 +1,103 @@
+db.games.find({"room": "orange"}, {players: {$slice: 2}});
+
+db.games.find({"room": "orange"}).pretty();
+db.games.find({"room": "red"}).pretty();
+db.games.find({"room": "blue"}).pretty();
+db.games.find({"room": "purple"}).pretty();
+
+
+db.testimage.find().pretty();
+db.testcomment.find().pretty();
+db.games.find().pretty();
+db.users.find().pretty();
+
+
+=====================================
+Finding something with two search parameters for the query:
+   db.games.find( {$and: [ {room: "test"}, {players: {$size : 1}} ] } )
+   db.games.find( { $and: [ { room: gmaeRoom }, { players: { $size : 1 } } ] } )
+   db.games.aggregate({$project: { count: { $size:"$players" }}})
+
+   db.games.find({
+        "players" : { "userId" : "5bebb0f815e86c2b000c3226" , "userName" : "3" }
+    });
+    db.games.find({         
+        "players" : {
+             "userId" : "5bebb0f815e86c2b000c3226" , "userName" : "3" 
+        }    
+    }).count();
+
+Deleting last element in (player) array
+    
+    db.games.find({ "players" : {$size : 8} }); 
+
+    db.games.update( { "room" : "test" }, { $pop: { players: 1 } } );
+
+Finding the Number of Documents in a Collection:
+    db.answers.find({"gameRoom" : "purple"}).count();
+    
+
+Deleting Documents in Collection:
+
+db.games.remove({});
+db.games.remove({
+        "players" : { "userId" : "5bebb0f815e86c2b000c3226" , "userName" : "3" }
+    });
+
+db.collection.remove(
+    <query>,
+    {
+        justOne: <boolean>,
+        writeConcern: <document>,
+        collation: <document>
+    }
+)
+
+{
+   delete: <collection>,
+   deletes: [
+      { q : <query>, limit : <integer>, collation: <document> },
+      { q : <query>, limit : <integer>, collation: <document> },
+      { q : <query>, limit : <integer>, collation: <document> },
+      ...
+   ],
+   ordered: <boolean>,
+   writeConcern: { <write concern> }
+}
+
+db.runCommand(
+   {
+      delete: "orders",
+      deletes: [ { q: { status: "D" }, limit: 1 } ]
+   }
+)
+
+{
+    "_id":"5bf5c418428a5711110da996",
+    "room":"test",
+    "players":[
+        {
+            "userId":"5bebb0f815e86c2b000c3226",
+            "userName":"3"
+        },
+        {
+            "userId":"5bebb0f815e86c2b000c3226",
+            "userName":"3"
+        },
+        {
+            "userId":"5bf05c83ca3e4e79f187100e",
+            "userName":"1"
+        },
+        {
+            "userId":"5bebb0f815e86c2b000c3226",
+            "userName":"3"
+        },
+        {
+            "userId":"5bebb0f815e86c2b000c3226",
+            "userName":"3"
+        },
+        {
+            "userId":"5bebb0f815e86c2b000c3226",
+            "userName":"3"
+        }],
+    "timer":null,"scores":[],"currentMeme":null,"answers":[],"active":false}

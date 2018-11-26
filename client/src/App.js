@@ -114,6 +114,7 @@ class App extends Component {
 
     return _findGame(selectedGame, this.getToken()).then(resultingJSON => {
       console.log(resultingJSON);
+      console.log(resultingJSON._id);
       this.setState({ currentGame: resultingJSON._id });
       let d = document.querySelector(".roomContainer");
       d.classList.add("hidden");

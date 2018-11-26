@@ -6,7 +6,7 @@ export const _getAvailableRooms = gamesAvailable => {
       "Content-Type": "application/json"
     }
   })
-    .then(res => res.json())
+    .then(res => res.json());
 };
 
 export const _findGame = (id, token) => {
@@ -17,7 +17,7 @@ export const _findGame = (id, token) => {
           'Content-Type': 'application/json'
         },
 	    body: JSON.stringify({token})
-      }).then(res => res.json())
+      }).then(res => res.json());
 }
 
 export const _joinGame = (currentGame, userId, userName, token) => {
@@ -28,7 +28,7 @@ export const _joinGame = (currentGame, userId, userName, token) => {
 	      'Content-Type': 'application/json'
 	    },
 	    body: JSON.stringify({userId, userName, token})
-	  }).then(res => res.json())
+	  }).then(res => res.json());
 }
 
 export const _leaveGame = (currentGame, userId, userName, token) => {
@@ -39,5 +39,5 @@ export const _leaveGame = (currentGame, userId, userName, token) => {
 	      'Content-Type': 'application/json'
 	    },
 	    body: JSON.stringify({userId, userName, token})
-	  }).then(res => res.json())
+	  }).then(res => res.json());
 }
