@@ -2,19 +2,31 @@
   font-family: 'Reem Kufi', sans-serif;
 }
 
-body {
+.bodyBackgroundImg {
   background-image: linear-gradient(to top, rgba(255, 0, 0, 0), rgb(65, 65, 65));
   background-size: cover;
   height: 667px;
   background-repeat: no-repeat;
+  animation: fadeIn ease 2s;   
+}
+
+.bodyBackgroundColor {
+  background-color: ghostwhite;
+  animation: fadeIn ease 2s;     
+}
+
+span {
+  font-weight: bold;
 }
 
 .roomContainer, .gameContainer {
-  /* text-align: center; */
-  margin: 115px auto;
+  margin: 115px 20%;
   width: 80%;
-  /* background-color: antiquewhite; */
 }
+
+/* .roomContainer {
+  float: left;
+} */
 
 .header {
   position: fixed;
@@ -51,14 +63,30 @@ body {
 }
 
 .joinButton {
-  border-radius: 2px;
-  color: white;
+  /* border-radius: 20px; */
+  color: black;
   margin: 4px;
   outline: none;
   cursor: pointer;
+  top: 20px;
+  margin: 0px 30px;
+  float: left;
+  position: relative;
+}
+
+.resultsContainer {
+  position: relative;
+  text-align: center;
+  border-radius: 20px;
+  margin: 5px;
   height: 100px;
   width: 100px;
   float: left;
+}
+
+.resultsContainer:hover {
+  cursor: pointer;
+  opacity: .7;
 }
 
 .joinButton:hover {
@@ -81,12 +109,25 @@ body {
   animation: fadeIn ease 1s;
 }
 
+#fadeOut {
+  animation: fadeOut ease 1s;  
+}
+
 @keyframes fadeIn{
   0% {
     opacity:0;
   }
   100% {
     opacity:1;
+  }
+}
+
+@keyframes fadeOut{
+  0% {
+    opacity:1;
+  }
+  100% {
+    opacity:0;
   }
 }
 
@@ -104,11 +145,12 @@ body {
 }
 
 .serviceButton {
-  border-radius: 2px;
-  background-color: mediumblue;
-  border-color: mediumblue;
+  border-radius: 20px;
+  background-color: lightseagreen;
+  border-color: lightseagreen;
   color: white;
-  margin: 0 4px;
+  margin: 10px 4px;
+  padding: 6px;
   outline: none;
   cursor: pointer;
 }
@@ -161,7 +203,15 @@ body {
 }
 
 #resultsP {
-  font-size: smaller;
+  margin-bottom: 0px;
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic; 
+}
+#resultsP1, #resultsP2 {
+  margin-bottom: -10px;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 

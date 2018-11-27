@@ -69,7 +69,9 @@ class App extends Component {
             this.setState({ gamesAvailable: arr });
             console.log(this.state);
           });
-        });
+        });        
+        document.querySelector("body").classList.remove("bodyBackgroundImg");
+        document.querySelector("body").classList.add("bodyBackgroundColor");        
       } else {
         alert("invalid username/password");
       }
@@ -93,6 +95,8 @@ class App extends Component {
       this.setState({ logged_in: false }, function() {
         localStorage.removeItem("token");
       });
+      document.querySelector("body").classList.remove("bodyBackgroundColor");              
+      document.querySelector("body").classList.add("bodyBackgroundImg");
     } else {
       this.setState({ userId: "" });
       this.setState({ username: "" });
@@ -100,6 +104,8 @@ class App extends Component {
       this.setState({ logged_in: false }, function() {
         localStorage.removeItem("token");
       });
+      document.querySelector("body").classList.remove("bodyBackgroundColor");              
+      document.querySelector("body").classList.add("bodyBackgroundImg");
     }
   };
 
@@ -174,10 +180,13 @@ class App extends Component {
   };
 
   pageLoad = () => {
-    setTimeout(function(){
-      this.setState({pageLoaded : true});
-    }.bind(this), 2000)
-  }
+    setTimeout(
+      function() {
+        this.setState({ pageLoaded: true });
+      }.bind(this),
+      2000
+    );
+  };
 
   render() {
     return (
@@ -185,11 +194,7 @@ class App extends Component {
         {this.state.logged_in === true && (
           <div className="loggedIn">
             <div className="header">
-              <img
-                src={logo}
-                alt="memelash logo"
-                id="logo2"
-              />
+              <img src={logo} alt="memelash logo" id="logo2" />
               <button
                 className="serviceButton"
                 id="logButton"
@@ -263,7 +268,7 @@ class App extends Component {
         )}
         {this.state.logged_in === true && (
           <div className="roomContainer" id="flyIn">
-            <h4>available games</h4>
+            <h4>available game rooms</h4>
             {this.state.gamesAvailable.map(x => (
               <Rooms
                 _id={x._id}

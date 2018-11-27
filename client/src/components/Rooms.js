@@ -15,11 +15,27 @@ class Rooms extends Component {
 
   render() {
     return (
-      <div className="resultsContainer">
-        {/* <p id="resultsP" key={this.props._id}>  
-        room name: {this.props.room}
-      </p> */}
-        <button
+      <div
+        className="resultsContainer"
+        data-id={this.props._id}
+        style={{
+          backgroundColor: this.props.room,
+          borderColor: this.props.room
+        }}
+        onClick={this.props.join}
+      >
+        <p id="resultsP" data-id={this.props._id} key={this.props._id}>
+          #{this.props.room} room
+        </p>
+        <p id="resultsP1" data-id={this.props._id}>
+          # of players
+        </p>
+        <p id="resultsP2" data-id={this.props._id}>
+          select to join!
+        </p>
+
+        {/* might not need this anymore. hold for now */}
+        {/* <button
           className="joinButton"
           data-id={this.props._id}
           onClick={this.props.join}
@@ -28,14 +44,16 @@ class Rooms extends Component {
             backgroundColor: this.props.room,
             borderColor: this.props.room
           }}
-        >
-          <span>{this.props.room} room</span>
+        > */}
+          {/* <span style={{fontSize:"14px"}}>#{this.props.room}</span>
           <br />
-          <span># of players</span>
-          <br />          
-          <span>select to join</span>
-        </button>
-        {this.props.didJoin === true && (
+          <span style={{fontSize:"12px"}}># of players</span>
+          <br />           */}
+          {/* <span style={{ fontSize: "12px" }}>join!</span>
+        </button> */}
+
+        {/* comment back in when ready */}
+        {/* {this.props.didJoin === true && (
           <PlayButton
             onClick={this.props.join}
             data-id={this.props.id}
@@ -43,7 +61,7 @@ class Rooms extends Component {
             username={this.state.username}
             userId={this.state.userId}
           />
-        )}
+        )} */}
       </div>
     );
   }
