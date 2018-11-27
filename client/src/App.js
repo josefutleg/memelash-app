@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
 import { _signUp, _login } from "./services/AuthService";
-import GameSession from './components/GameSession';
+import GameSession from "./components/GameSession";
 
 import {
   _getAvailableRooms,
@@ -11,12 +11,15 @@ import {
 } from "./services/GameService";
 import socketIOClient from "socket.io-client";
 import Rooms from "./components/Rooms";
+import logo from "./images/logoMeme.png";
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
       logged_in: false,
+      pageLoaded: false,
+      newUser: false,
       username: "",
       userId: "",
       response: false,
@@ -36,9 +39,7 @@ class App extends Component {
     const socket = socketIOClient(endpoint);
     console.log(this.state.response);
     socket.on("FromAPI", data => this.setState({ response: `${data}` }));
-    socket.emit("user connected", data => {
-      
-    });
+    socket.emit("user connected", data => {});
   }
 
   login = event => {
@@ -57,7 +58,7 @@ class App extends Component {
         this.setState({ vote: res.vote });
         this.setState({ logged_in: true }, function() {
           localStorage.setItem("token", res.token);
-          alert(this.state.response);
+          // alert(this.state.response);
           _getAvailableRooms().then(resultingJSON => {
             let arr = [];
             for (let i = 0; i < resultingJSON.length; i++) {
@@ -68,7 +69,9 @@ class App extends Component {
             this.setState({ gamesAvailable: arr });
             console.log(this.state);
           });
-        });
+        });        
+        document.querySelector("body").classList.remove("bodyBackgroundImg");
+        document.querySelector("body").classList.add("bodyBackgroundColor");        
       } else {
         alert("invalid username/password");
       }
@@ -77,11 +80,42 @@ class App extends Component {
 
   logout = event => {
     event.preventDefault();
-    this.setState({ userId: "" });
-    this.setState({ username: "" });
-    this.setState({ logged_in: false }, function() {
-      localStorage.removeItem("token");
-    });
+    if (this.state.currentGame !== null) {
+      _leaveGame(
+        this.state.currentGame,
+        this.state.userId,
+        this.state.username,
+        this.getToken()
+      ).then(rj => {
+        console.log(rj);
+      });
+      this.setState({ userId: "" });
+      this.setState({ username: "" });
+      this.setState({ currentGame: null });
+      this.setState({ logged_in: false }, function() {
+        localStorage.removeItem("token");
+      });
+      document.querySelector("body").classList.remove("bodyBackgroundColor");              
+      document.querySelector("body").classList.add("bodyBackgroundImg");
+    } else {
+      this.setState({ userId: "" });
+      this.setState({ username: "" });
+      this.setState({ currentGame: null });
+      this.setState({ logged_in: false }, function() {
+        localStorage.removeItem("token");
+      });
+      document.querySelector("body").classList.remove("bodyBackgroundColor");              
+      document.querySelector("body").classList.add("bodyBackgroundImg");
+    }
+  };
+
+  changeForm = event => {
+    event.preventDefault();
+    // let a = document.querySelector(".logInForm");
+    // a.setAttribute("id", "flyIn");
+    if (this.state.newUser === false) {
+      this.setState({ newUser: true });
+    } else this.setState({ newUser: false });
   };
 
   signUp = event => {
@@ -96,6 +130,7 @@ class App extends Component {
       return _signUp(username, password).then(res => {
         console.log(res);
         alert(res.message);
+        this.setState({ newUser: false });
       });
     } else {
       alert("your password and password confirmation have to match!");
@@ -107,7 +142,7 @@ class App extends Component {
 
   joinGame = event => {
     event.preventDefault();
-    this.setState({joinedGame: true})
+    this.setState({ joinedGame: true });
 
     let selectedGame = event.target.getAttribute("data-id");
     console.log(selectedGame);
@@ -145,64 +180,103 @@ class App extends Component {
     });
   };
 
-
-
-
+  pageLoad = () => {
+    setTimeout(
+      function() {
+        this.setState({ pageLoaded: true });
+      }.bind(this),
+      2000
+    );
+  };
 
   render() {
     return (
-      <div className="App">
+      <div className="App" onLoad={this.pageLoad}>
         {this.state.logged_in === true && (
           <div className="loggedIn">
             <div className="header">
-              <button onClick={this.logout}>log out</button>
-              <h4>hello, {this.state.username}!</h4>
-            </div>
-        </div>    
-        )}
-        {this.state.logged_in === false && (
-          <div className="form">
-            <div className="logInForm">
-              <form id="login" onSubmit={this.login}>
-                <input type="text" name="name" placeholder="username" />
-                <br />
-                <input type="password" name="password" placeholder="password" />
-                <br />
-                <button>log in</button>
-              </form>
-            </div>
-            <br />
-            <div className="signUpForm">
-              <form id="signUp" onSubmit={this.signUp}>
-                <input type="text" name="name" placeholder="new username" />
-                <br />
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="new password"
-                />
-                <br />
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="confirm password"
-                />
-                <br />
-                <button>sign up</button>
-              </form>
+              <img src={logo} alt="memelash logo" id="logo2" />
+              <button
+                className="serviceButton"
+                id="logButton"
+                onClick={this.logout}
+              >
+                <span>log out</span>
+              </button>
+              <h4 id="logInName">hello, {this.state.username}!</h4>
+              <div className="headerLine" />
             </div>
           </div>
         )}
+        {this.state.logged_in === false && (
+          <div className="form">
+            <img src={logo} alt="memelash logo" id="logo" />
+            {this.state.newUser === false && this.state.pageLoaded === true && (
+              <div className="logInForm" id="flyIn">
+                <form id="login" onSubmit={this.login}>
+                  <input type="text" name="name" placeholder="username" />
+                  <br />
+                  <input
+                    type="password"
+                    name="password"
+                    placeholder="password"
+                  />
+                  <br />
+                  <button className="serviceButton" id="logButton">
+                    <span>log in</span>
+                  </button>
+                  <button
+                    onClick={this.changeForm}
+                    className="serviceButton"
+                    id="newUser"
+                  >
+                    <span>new user?</span>
+                  </button>
+                </form>
+              </div>
+            )}
+            {this.state.newUser === true && (
+              <div className="signUpForm" id="flyIn">
+                <form id="signUp" onSubmit={this.signUp}>
+                  <input type="text" name="name" placeholder="new username" />
+                  <br />
+                  <input
+                    type="password"
+                    name="password"
+                    placeholder="new password"
+                  />
+                  <br />
+                  <input
+                    type="password"
+                    name="password"
+                    placeholder="confirm password"
+                  />
+                  <br />
+                  <button className="serviceButton" id="newUser">
+                    <span>sign up</span>
+                  </button>
+                  <button
+                    className="serviceButton"
+                    id="logButton"
+                    onClick={this.changeForm}
+                  >
+                    <span>back</span>
+                  </button>
+                </form>
+              </div>
+            )}
+          </div>
+        )}
         {this.state.logged_in === true && (
-          <div className="roomContainer">
-            <h3>available games</h3>
+          <div className="roomContainer" id="flyIn">
+            <h4>available game rooms</h4>
             {this.state.gamesAvailable.map(x => (
               <Rooms
                 _id={x._id}
                 room={x.room}
                 players={x.players}
                 join={this.joinGame}
-                didJoin = {this.state.joinedGame}
+                didJoin={this.state.joinedGame}
               />
             ))}
           </div>
@@ -215,7 +289,7 @@ class App extends Component {
               username={this.state.username}
               userId={this.state.userId}
             /> */}
-            <GameSession 
+            <GameSession
               logged_in={this.state.logged_in}
               username={this.state.username}
               userId={this.state.userId}
@@ -223,7 +297,7 @@ class App extends Component {
             />
           </div>
         )}
-        <button
+        {/* <button
           onClick={
             (this.check = event => {
               console.log(this.state);
@@ -231,13 +305,12 @@ class App extends Component {
           }
         >
           test
-        </button>
+        </button> */}
       </div>
     );
   }
 }
 
 export default App;
-
 
 // http://version1.api.memegenerator.net//Generators_Search?q=funny&pageSize=25&apiKey=ed0e5625-ed2d-4049-a830-bafce8b69716

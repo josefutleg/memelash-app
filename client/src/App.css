@@ -1,28 +1,56 @@
 * {
   font-family: 'Reem Kufi', sans-serif;
 }
-/* .App {
-  text-align: center;
-} */
+
+.bodyBackgroundImg {
+  background-image: linear-gradient(to top, rgba(255, 0, 0, 0), rgb(65, 65, 65));
+  background-size: cover;
+  height: 667px;
+  background-repeat: no-repeat;
+  animation: fadeIn ease 2s;   
+}
+
+.bodyBackgroundColor {
+  background-color: ghostwhite;
+  animation: fadeIn ease 2s;     
+}
+
+span {
+  font-weight: bold;
+}
 
 .roomContainer, .gameContainer {
-  text-align: center;
-  margin: 70px auto;
-  width: 40%;
-  background-color: antiquewhite;
+  margin: 115px 20%;
+  width: 80%;
 }
+
+/* .roomContainer {
+  float: left;
+} */
 
 .header {
   position: fixed;
   top: 0;
-  height: 50px;
   width: 100%;
-  background-color: lavender;
+}
+
+.headerLine {
+  position: fixed;
+  width: 100%;
+  border-bottom: solid springgreen;
+  animation: flyIn .5s linear;  
 }
 
 .header button {
   float: right;
+  margin: 12px;
+  background-color: tomato;
+  border-color: tomato;
 }
+
+/* .header button:hover {
+
+} */
 
 .hidden {
   display: none;
@@ -30,16 +58,162 @@
 
 .form {
   text-align: center;
-  margin: 70px auto;
+  margin: 200px auto;
   width: 60%;
 }
+
+.joinButton {
+  /* border-radius: 20px; */
+  color: black;
+  margin: 4px;
+  outline: none;
+  cursor: pointer;
+  top: 20px;
+  margin: 0px 30px;
+  float: left;
+  position: relative;
+}
+
+.resultsContainer {
+  position: relative;
+  text-align: center;
+  border-radius: 20px;
+  margin: 5px;
+  height: 100px;
+  width: 100px;
+  float: left;
+}
+
+.resultsContainer:hover {
+  cursor: pointer;
+  opacity: .7;
+}
+
+.joinButton:hover {
+  opacity: .5;
+}
+
+.logInForm, .signUpForm {
+  margin-top: 20px;
+}
+
+.loggedIn {
+  animation: fadeIn ease 2s;    
+}
+
+#flyIn {
+  animation: flyIn .4s linear;
+}
+
+#fadeIn {
+  animation: fadeIn ease 1s;
+}
+
+#fadeOut {
+  animation: fadeOut ease 1s;  
+}
+
+@keyframes fadeIn{
+  0% {
+    opacity:0;
+  }
+  100% {
+    opacity:1;
+  }
+}
+
+@keyframes fadeOut{
+  0% {
+    opacity:1;
+  }
+  100% {
+    opacity:0;
+  }
+}
+
+@keyframes flyIn {
+  0%   { 
+  transform: translateX(200%); 		
+  }
+  100% { 
+  transform: translateX(0%); 
+  }
+ }
 
 .playButton {
   position: relative;
 }
-/* .resultsP {
-  float: left;
+
+.serviceButton {
+  border-radius: 20px;
+  background-color: lightseagreen;
+  border-color: lightseagreen;
+  color: white;
+  margin: 10px 4px;
+  padding: 6px;
+  outline: none;
+  cursor: pointer;
 }
-.join {
-  float: right;
-} */
+
+.serviceButton:hover {
+  opacity: .5;
+  color: white;
+}
+
+#logo {
+  height: 40px;
+  animation: fadeIn ease 2s; 
+}
+
+#logo2 {
+  height: 40px;
+  float: left;
+  margin: 6px 20px 0;
+}
+
+#logInName {
+  clear: both;
+  padding-top: 5px;
+  margin-left: 25px;
+}
+
+#newUser span, #logButton span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+#newUser span:after, #logButton span:after {
+  content: '\27AE';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+#newUser:hover span, #logButton:hover span {
+  padding-right: 25px;
+}
+
+#newUser:hover span:after, #logButton:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+
+#resultsP {
+  margin-bottom: 0px;
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic; 
+}
+#resultsP1, #resultsP2 {
+  margin-bottom: -10px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+
+
+

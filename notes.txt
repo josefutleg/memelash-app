@@ -80,3 +80,15 @@ db.games.insert([
     active: false           //game is not in progress - will change to true once game starts. so it will not show on user's dashboard for games to join
   }
 ])
+
+db.games.insert(
+    {
+    room: "palegreen",
+    players: [],
+    timer: null,
+    scores: [],
+    currentMeme: null,
+    answers: [],
+    active: false
+  
+})
