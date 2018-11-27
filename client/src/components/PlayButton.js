@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import socketIOClient from 'socket.io-client'
+import socketIOClient from 'socket.io-client';
 
 class PlayButton extends Component {
     constructor(props) {
@@ -21,22 +21,15 @@ class PlayButton extends Component {
         }
     }
 
-    send = () => {
-        const socket = socketIOClient(this.state.endpoint);
-        socket.emit('change color', this.state.color)
-    }
-
-    
-
-    setMemeImg = event => {
-        this.setState({memeSrc: "https://imageresizer.static9.net.au/qifWHWByMwnsA068tqYbnw_nFz8=/396x0/http%3A%2F%2Fprod.static9.net.au%2F_%2Fmedia%2F2017%2F05%2F24%2F13%2F27%2FChloe-meme-imgflip.jpg"})
-    }
+    // componentDidMount() {
+    //     _joinGame(currentGame, this.state.userId, this.state.username, )
+    // }
 
     play = event => {
-        this.setMemeImg();
+        // this.setMemeImg();
         // const socket = socketIOClient(this.state.endpoint);
         // socket.emit('display image', this.state.memeSrc)
-        this.sendImage();
+        // this.sendImage();
         this.setState({startSess: true})
         console.log("Lets play")
         console.log(this.state)
@@ -61,11 +54,26 @@ class PlayButton extends Component {
 
         event.preventDefault();
     }
+    //Chaning Background with Socket
+    sendColor = () => {
+        const socket = socketIOClient(this.state.endpoint);
+        socket.emit('change color', this.state.color)
+    }
+    setColor = (color) => {
+        this.setState({ color })
+    }
+    //Changing Image with Socket
+    displayImage = () => {
 
+    }
     sendImage = () => {
         const socket = socketIOClient(this.state.endpoint);
         socket.emit('display image', this.state.memeSrc);
     }
+    setMemeImg = (src) => {
+        this.setState({memeSrc: src})
+    }
+    //Sending comment with Socket
     sendComment = () => {
         const socket = socketIOClient(this.state.endpoint);
         socket.emit('display comment', this.state.value)
@@ -76,22 +84,6 @@ class PlayButton extends Component {
         socket.on('change color', (col) => {
             document.body.style.backgroundColor = col
         })
-        // socket.on('display comment', (com) => {
-        //     var x = document.createElement("P");                        
-        //     var t = document.createTextNode("This is a paragraph.");    
-        //     x.appendChild(t);                                          
-        //     document.body.appendChild(x); 
-        // })
-        // socket.on("display comment", (string) => {
-        //     return fetch(`http://localhost:3001/games/update/${currentGame}`, {
-        //         method: 'POST',
-        //         headers: {
-        //           'Accept': 'application/json',
-        //           'Content-Type': 'application/json'
-        //         },
-        //         body: JSON.stringify({string})
-        //       }).then(res => res.json())
-        // })
 
         return (
             <div className="playButton">
@@ -116,13 +108,13 @@ class PlayButton extends Component {
                         </form>
                     </div>
                 )}
-                {/* <div style={{ textAlign: "center" }}>
-                    <button onClick={() => this.send() }>Change Color</button>
-                    <button id="blue" onClick={() => this.setColor('blue')}>Blue</button>
-                    <button id="red" onClick={() => this.setColor('red')}>Red</button>
-                </div> */}
+                <div style={{ textAlign: "center" }}>
+                    <button onClick={() => this.sendImage() }>Send Meme Image</button>
+                    <button id="success" onClick={() => this.setMemeImg('https://upload.wikimedia.org/wikipedia/en/thumb/f/ff/SuccessKid.jpg/256px-SuccessKid.jpg')}>Success kid</button>
+                    <button id="confused" onClick={() => this.setMemeImg("https://imageresizer.static9.net.au/qifWHWByMwnsA068tqYbnw_nFz8=/396x0/http%3A%2F%2Fprod.static9.net.au%2F_%2Fmedia%2F2017%2F05%2F24%2F13%2F27%2FChloe-meme-imgflip.jpg")}>Confused Girl</button>
+                </div>
                 <div>
-                    <button onClick={() => this.send() }>Change Color</button>
+                    <button onClick={() => this.sendColor() }>Change Color</button>
                     <button id="blue" onClick={() => this.setColor('blue')}>Blue</button>
                     <button id="red" onClick={() => this.setColor('red')}>Red</button>
                 </div>
@@ -132,3 +124,26 @@ class PlayButton extends Component {
 }
 
 export default PlayButton;
+
+        // socket.on('display comment', (com) => {
+        //     var x = document.createElement("P");                        
+        //     var t = document.createTextNode("This is a paragraph.");    
+        //     x.appendChild(t);                                          
+        //     document.body.appendChild(x); 
+        // })
+        // socket.on("display comment", (string) => {
+        //     return fetch(`http://localhost:3001/games/update/${currentGame}`, {
+        //         method: 'POST',
+        //         headers: {
+        //           'Accept': 'application/json',
+        //           'Content-Type': 'application/json'
+        //         },
+        //         body: JSON.stringify({string})
+        //       }).then(res => res.json())
+        // })
+
+        {/* <div style={{ textAlign: "center" }}>
+                    <button onClick={() => this.send() }>Change Color</button>
+                    <button id="blue" onClick={() => this.setColor('blue')}>Blue</button>
+                    <button id="red" onClick={() => this.setColor('red')}>Red</button>
+                </div> */}

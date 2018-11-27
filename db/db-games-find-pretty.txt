@@ -1,0 +1,466 @@
+{
+	"_id" : ObjectId("5bf035fd428a5711110da98c"),
+	"room" : "red",
+	"players" : [
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		]
+	],
+	"timer" : null,
+	"scores" : [ ],
+	"currentMeme" : null,
+	"answers" : [ ],
+	"active" : false
+}
+{
+	"_id" : ObjectId("5bf035fd428a5711110da98d"),
+	"room" : "blue",
+	"players" : [
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		]
+	],
+	"timer" : null,
+	"scores" : [ ],
+	"currentMeme" : null,
+	"answers" : [ ],
+	"active" : false
+}
+{
+	"_id" : ObjectId("5bf035fd428a5711110da98e"),
+	"room" : "purple",
+	"players" : [
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bf05c83ca3e4e79f187100e",
+				"userName" : "1"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		]
+	],
+	"timer" : null,
+	"scores" : [ ],
+	"currentMeme" : null,
+	"answers" : [ ],
+	"active" : false
+}
+{
+	"_id" : ObjectId("5bf087dd5c595b8147ae3e72"),
+	"room" : "orange",
+	"players" : [
+		{
+			"id" : ObjectId("5bebb0f815e86c2b000c3226"),
+			"user" : "3"
+		},
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		]
+	],
+	"timer" : null,
+	"currentMeme" : null,
+	"answers" : [
+		{
+			"id" : ObjectId("5bebb0f815e86c2b000c3226"),
+			"input" : "ddeded"
+		}
+	],
+	"active" : false
+}
+{
+	"_id" : ObjectId("5bf088db19d63081810260b3"),
+	"room" : "orange",
+	"players" : [
+		{
+			"id" : ObjectId("5bebb0f815e86c2b000c3226"),
+			"user" : "3"
+		},
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		]
+	],
+	"timer" : null,
+	"currentMeme" : null,
+	"answers" : [
+		{
+			"id" : ObjectId("5bebb0f815e86c2b000c3226"),
+			"input" : "fefefefefe"
+		}
+	],
+	"active" : false
+}
+{
+	"_id" : ObjectId("5bf08aff5a4f1581e123fe43"),
+	"room" : ObjectId("5bf088db19d63081810260b3"),
+	"players" : [
+		{
+			"id" : ObjectId("5bebb0f815e86c2b000c3226"),
+			"user" : "3"
+		},
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		]
+	],
+	"timer" : null,
+	"currentMeme" : null,
+	"answers" : [
+		{
+			"id" : ObjectId("5bebb0f815e86c2b000c3226"),
+			"input" : "feffefefefe"
+		}
+	],
+	"active" : false
+}
+{
+	"_id" : ObjectId("5bf08b4ab731ac81ecdc1eaf"),
+	"room" : ObjectId("5bf08aff5a4f1581e123fe43"),
+	"players" : [
+		{
+			"id" : ObjectId("5bebb0f815e86c2b000c3226"),
+			"user" : "3"
+		},
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		]
+	],
+	"timer" : null,
+	"currentMeme" : null,
+	"answers" : [
+		{
+			"id" : ObjectId("5bebb0f815e86c2b000c3226"),
+			"input" : "jfefefefefe"
+		}
+	],
+	"active" : false
+}
+{
+	"_id" : ObjectId("5bf08e97428a5711110da990"),
+	"room" : "test",
+	"players" : [
+		{
+			"id" : ObjectId("5bebb0f815e86c2b000c3226"),
+			"user" : "3"
+		},
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		]
+	],
+	"timer" : null,
+	"currentMeme" : "https://upload.wikimedia.org/wikipedia/en/thumb/f/ff/SuccessKid.jpg/256px-SuccessKid.jpg",
+	"answers" : [
+		{
+			"id" : ObjectId("5bebb0f815e86c2b000c3226"),
+			"input" : "eefwwefefefey"
+		}
+	],
+	"active" : false
+}
+{
+	"_id" : ObjectId("5bf08b47b731ac81ecdc1eae"),
+	"room" : ObjectId("5bf08aff5a4f1581e123fe43"),
+	"players" : [
+		{
+			"id" : ObjectId("5bebb0f815e86c2b000c3226"),
+			"user" : "3"
+		},
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		]
+	],
+	"timer" : null,
+	"currentMeme" : null,
+	"answers" : [
+		{
+			"id" : ObjectId("5bebb0f815e86c2b000c3226"),
+			"input" : "jfefefefefe"
+		}
+	],
+	"active" : false
+}
+{
+	"_id" : ObjectId("5bf090ee3e74c5830cc41120"),
+	"room" : "test",
+	"players" : [
+		{
+			"id" : ObjectId("5bebb0f815e86c2b000c3226"),
+			"user" : "3"
+		},
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		],
+		[
+			{
+				"userId" : "5bebb0f815e86c2b000c3226",
+				"userName" : "3"
+			}
+		]
+	],
+	"timer" : null,
+	"currentMeme" : null,
+	"answers" : [
+		{
+			"id" : ObjectId("5bebb0f815e86c2b000c3226"),
+			"input" : "rgjegjeg;kaege"
+		}
+	],
+	"active" : false
+}

@@ -1,5 +1,14 @@
 db.games.insert([
   {
+    room: "test",
+    players: [],
+    timer: null,
+    scores: [],
+    currentMeme: null,
+    answers: [],
+    active: false
+  },
+  {
     room: "red",
     players: [],
     timer: null,
@@ -54,6 +63,22 @@ db.users.insert({
   vote: null
                             //all values will empty when user logs out, ends/exits game
 });
+db.games.insert({
+  {
+    room: "orange",
+    players: {
+      id: userId,
+      user: userName
+    },
+    timer: null,            //interval is created once game starts. this will change constantly and communicate with the socket to keep the timer the same on all users pages
+    currentMeme: null,      //when this changes, it should be the same for all users in the room
+    answers: {
+        id: userId,         //this will link to db.users' _id. when appended to page, set each radio input's #id value to each unique _id
+        input: userInput
+    },
+    active: false           //game is not in progress - will change to true once game starts. so it will not show on user's dashboard for games to join
+  }
+})
 db.games.insert([
   {
     room: "orange",
@@ -74,3 +99,5 @@ db.games.insert([
     active: false           //game is not in progress - will change to true once game starts. so it will not show on user's dashboard for games to join
   }
 ])
+
+
